@@ -10,7 +10,6 @@ public class Utilisateur {
     private String    email;
     private String    motDePasse;
     private String    nom;
-    private Timestamp dateInscription;
 
 
     public Long getId() {
