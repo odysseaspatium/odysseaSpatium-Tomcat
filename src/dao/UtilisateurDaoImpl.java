@@ -88,7 +88,7 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
     /*
      * Simple méthode utilitaire permettant de faire la correspondance (le
      * mapping) entre une ligne issue de la table des utilisateurs (un
-     * ResultSet) et un bean Utilisateur.
+     * ResultSet) et un Utilisateur.
      */
     private static Utilisateur map( ResultSet resultSet ) throws SQLException {
         Utilisateur utilisateur = new Utilisateur();
