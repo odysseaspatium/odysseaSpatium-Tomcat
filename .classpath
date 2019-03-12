@@ -14,5 +14,8 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="/home/ubo/Documents/jasypt-1.9.2/lib/jasypt-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/home/ubo/Documents/jackson-core-2.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/ubo/Documents/jackson-databind-2.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/ubo/Documents/jackson-annotations-2.8.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
