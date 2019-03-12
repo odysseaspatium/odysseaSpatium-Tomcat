@@ -58,11 +58,11 @@ public class Inscription extends HttpServlet {
         try {
             out.println(mapper.writeValueAsString(utilisateur));
           } catch (JsonGenerationException e) {
-            e.printStackTrace();
+        	  e.printStackTrace();
           } catch (JsonMappingException e) {
-            e.printStackTrace();
+        	  e.printStackTrace();
           } catch (IOException e) {
-            e.printStackTrace();
+        	  e.printStackTrace();
           }
           out.close();
 	}
