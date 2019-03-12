@@ -14,7 +14,7 @@ import dao.UtilisateurDao;
 public final class InscriptionForm {
     private static final String CHAMP_EMAIL      = "email";
     private static final String CHAMP_PASS       = "motdepasse";
-    private static final String CHAMP_CONF       = "confirmation";
+    private static final String CHAMP_PRENOM       = "prenom";
     private static final String CHAMP_NOM        = "nom";
 
     private static final String ALGO_CHIFFREMENT = "SHA-256";
@@ -38,13 +38,13 @@ public final class InscriptionForm {
     public Utilisateur inscrireUtilisateur( HttpServletRequest request ) {
         String email = getValeurChamp( request, CHAMP_EMAIL );
         String motDePasse = getValeurChamp( request, CHAMP_PASS );
-        String confirmation = getValeurChamp( request, CHAMP_CONF );
+        //String confirmation = getValeurChamp( request, CHAMP_CONF );
         String nom = getValeurChamp( request, CHAMP_NOM );
 
         Utilisateur utilisateur = new Utilisateur();
         try {
             traiterEmail( email, utilisateur );
-            traiterMotsDePasse( motDePasse, confirmation, utilisateur );
+            //traiterMotsDePasse( motDePasse, confirmation, utilisateur );
             traiterNom( nom, utilisateur );
 
             if ( erreurs.isEmpty() ) {
@@ -83,7 +83,7 @@ public final class InscriptionForm {
             validationMotsDePasse( motDePasse, confirmation );
         } catch ( FormValidationException e ) {
             setErreur( CHAMP_PASS, e.getMessage() );
-            setErreur( CHAMP_CONF, null );
+            //setErreur( CHAMP_CONF, null );
         }
 
         /*
