@@ -63,10 +63,9 @@ public class Inscription extends HttpServlet {
 		//System.out.println(request.getParameter("data"));
 		PrintWriter out = response.getWriter();
 	    ObjectMapper mapper = new ObjectMapper();
-		InscriptionForm form = new InscriptionForm( utilisateurDao );
+		//InscriptionForm form = new InscriptionForm( utilisateurDao );
         /* Traitement de la requête et récupération du bean en résultant */
         //Utilisateur utilisateur = form.inscrireUtilisateur( request );
-		System.out.println(request.getReader());
 		Utilisateur utilisateur = new ObjectMapper().readValue(request.getReader(), Utilisateur.class);
 		System.out.println(utilisateur);
 		utilisateur.setMotDePasse(utilisateur.getMotdepasse());
