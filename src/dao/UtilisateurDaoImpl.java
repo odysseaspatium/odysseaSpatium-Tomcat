@@ -12,7 +12,7 @@ import models.Utilisateur;
 public class UtilisateurDaoImpl implements UtilisateurDao {
 	
 	private static final String REQ_SELECT_BY_MAIL = "";
-	private static final String REQ_INSERT = "";
+	private static final String REQ_INSERT = "INSERT INTO t_utilisateur (nom_user,prenom_user,mail_user,mdp_user,id_panier_user) VALUES (?, ?, ?, ?, 1);";
 	
 	private DAOFactory daoFactory;
 	
@@ -34,7 +34,8 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 
         try {
             connexion = daoFactory.getConnection();
-            preparedStatement = initialisationRequetePreparee( connexion, REQ_INSERT, true, utilisateur.getEmail(), utilisateur.getMotDePasse(), utilisateur.getNom() );
+            
+            preparedStatement = initialisationRequetePreparee( connexion, REQ_INSERT, true, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMotdepasse() );
             int statut = preparedStatement.executeUpdate();
             if ( statut == 0 ) {
                 throw new DAOException( "Échec de la création de l'utilisateur, aucune ligne ajoutée dans la table." );

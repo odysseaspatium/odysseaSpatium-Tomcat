@@ -17,7 +17,7 @@ public final class InscriptionForm {
     private static final String CHAMP_PRENOM       = "prenom";
     private static final String CHAMP_NOM        = "nom";
 
-    private static final String ALGO_CHIFFREMENT = "SHA-256";
+    private static final String ALGO_CHIFFREMENT = "MD5";
 
     private String              resultat;
     private Map<String, String> erreurs          = new HashMap<String, String>();
@@ -36,27 +36,28 @@ public final class InscriptionForm {
     }
 
     public Utilisateur inscrireUtilisateur( HttpServletRequest request ) {
+    	System.out.println(request.toString());
         String email = getValeurChamp( request, CHAMP_EMAIL );
         String motDePasse = getValeurChamp( request, CHAMP_PASS );
-        //String confirmation = getValeurChamp( request, CHAMP_CONF );
+        String prenom = getValeurChamp( request, CHAMP_PRENOM  );
         String nom = getValeurChamp( request, CHAMP_NOM );
-
+        
         Utilisateur utilisateur = new Utilisateur();
-        try {
-            traiterEmail( email, utilisateur );
-            //traiterMotsDePasse( motDePasse, confirmation, utilisateur );
-            traiterNom( nom, utilisateur );
+        utilisateur.setEmail(email);
+        utilisateur.setNom(nom);
+        utilisateur.setPrenom(prenom);
+        ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
+        passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
+        passwordEncryptor.setPlainDigest( false );
+        String motDePasseChiffre = passwordEncryptor.encryptPassword( motDePasse );
 
-            if ( erreurs.isEmpty() ) {
-                utilisateurDao.creer( utilisateur );
-                resultat = "Succès de l'inscription.";
-            } else {
-                resultat = "Échec de l'inscription.";
-            }
-        } catch ( DAOException e ) {
-            resultat = "Échec de l'inscription : une erreur imprévue est survenue, merci de réessayer dans quelques instants.";
-            e.printStackTrace();
-        }
+        utilisateur.setMotDePasse( motDePasseChiffre );
+        utilisateur.setMotDePasse(motDePasse);
+        //traiterEmail( email, utilisateur );
+        //traiterMotsDePasse( motDePasse, confirmation, utilisateur );
+        //traiterNom( nom, utilisateur );
+    	utilisateurDao.creer( utilisateur );
+    	System.out.println("succès de la création de l'utilisateur");
 
         return utilisateur;
     }

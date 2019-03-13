@@ -46,10 +46,15 @@ public class DAOFactory {
 
         try {
             properties.load( fichierProperties );
-            url = properties.getProperty( PROPERTY_URL );
+            /*url = properties.getProperty( PROPERTY_URL );
             driver = properties.getProperty( PROPERTY_DRIVER );
             nomUtilisateur = properties.getProperty( PROPERTY_NOM_UTILISATEUR );
-            motDePasse = properties.getProperty( PROPERTY_MOT_DE_PASSE );
+            motDePasse = properties.getProperty( PROPERTY_MOT_DE_PASSE );*/
+            
+            driver = "org.mariadb.jdbc.Driver";
+            url = "jdbc:mariadb://obiwan2.univ-brest.fr/zfm1-zidderbe0";
+            nomUtilisateur = "zidderbe0";
+            motDePasse = "r9zczzjz";
         } catch ( IOException e ) {
             throw new DAOConfigurationException( "Impossible de charger le fichier properties " + FICHIER_PROPERTIES, e );
         }
@@ -67,6 +72,7 @@ public class DAOFactory {
     /* Méthode chargée de fournir une connexion à la base de données */
      /* package */ 
     Connection getConnection() throws SQLException {
+    	System.out.println(username);
         return DriverManager.getConnection( url, username, password );
     }
 

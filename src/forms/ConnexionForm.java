@@ -60,7 +60,7 @@ public final class ConnexionForm {
         passwordEncryptor.setPlainDigest( false );
         String motDePasseChiffre = passwordEncryptor.encryptPassword( motDePasse );
         
-        if(!utilisateur.getMotDePasse().equals(motDePasseChiffre)) {
+        if(!utilisateur.getMotdepasse().equals(motDePasseChiffre)) {
         	setErreur("checkPass","Erreur les mots de passe sont différents");
         	utilisateur = null;
         }

@@ -37,6 +37,7 @@ public class InitialisationDaoFactory implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent sce)  { 
          // TODO Auto-generated method stub
+    	System.out.println("contextInitialized");
     	ServletContext context = sce.getServletContext();
     	this.daoFactory = DAOFactory.getInstance();
     	context.setAttribute(ATT_DAO_FACTORY, this.daoFactory);

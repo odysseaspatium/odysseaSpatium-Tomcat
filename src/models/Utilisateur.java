@@ -2,46 +2,70 @@ package models;
 
 import java.sql.Timestamp;
 
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 
 public class Utilisateur {
-
+	
+	private static final String ALGO_CHIFFREMENT = "MD5";
 
     private Long      id;
     private String    email;
-    private String    motDePasse;
+    private String    motdepasse;
     private String    nom;
+    private String    prenom;
+    
+    /*public Utilisateur(String email, String motdepasse, String nom, String prenom) {
+    	this.email = email;
+    	this.motdepasse = motdepasse;
+    	this.nom = nom;
+    	this.prenom = prenom;
+    }*/
+    
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getMotdepasse() {
+		return motdepasse;
+	}
+	public void setMotDePasse(String motdepasse) {
+		ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
+        passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
+        passwordEncryptor.setPlainDigest( false );
+        String motDePasseChiffre = passwordEncryptor.encryptPassword( motdepasse );
+        System.out.println(motDePasseChiffre);
+		this.motdepasse = motDePasseChiffre;
+	}
+	
+	public String getNom() {
+		return nom;
+	}
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	public String getPrenom() {
+		return prenom;
+	}
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	
+	@Override
+	public String toString() {
+		return "Utilisateur [id=" + id + ", email=" + email + ", motdepasse=" + motdepasse + ", nom=" + nom
+				+ ", prenom=" + prenom + "]";
+	}
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId( Long id ) {
-        this.id = id;
-    }
-
-    public void setEmail( String email ) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setMotDePasse( String motDePasse ) {
-        this.motDePasse = motDePasse;
-    }
-
-    public String getMotDePasse() {
-        return motDePasse;
-    }
-
-    public void setNom( String nom ) {
-        this.nom = nom;
-    }
-
-    public String getNom() {
-        return nom;        
-    }
 
 }

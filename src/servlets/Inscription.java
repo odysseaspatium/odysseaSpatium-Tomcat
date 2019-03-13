@@ -41,20 +41,38 @@ public class Inscription extends HttpServlet {
 	 * @see Servlet#init(ServletConfig)
 	 */
 	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
-		this.utilisateurDao = ( (DAOFactory) getServletContext().getAttribute( CONF_DAO_FACTORY ) ).getUtilisateurDao();
+		//config.getServletContext().getAttribute(CONF_DAO_FACTORY)
+		this.utilisateurDao = ( (DAOFactory) config.getServletContext().getAttribute( CONF_DAO_FACTORY ) ).getUtilisateurDao();
+		System.out.println(config.getServletContext().getAttribute( CONF_DAO_FACTORY ) );
+		//this.utilisateurDao = DAOFactory.getInstance().getUtilisateurDao();
 	}
-
+	
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        System.out.println("doGet");
+    }
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.setHeader("Content-Type", "application/json");
+		System.out.println("DoPost");
+		//System.out.println(request.getParameter("data"));
 		PrintWriter out = response.getWriter();
 	    ObjectMapper mapper = new ObjectMapper();
 		InscriptionForm form = new InscriptionForm( utilisateurDao );
         /* Traitement de la requête et récupération du bean en résultant */
-        Utilisateur utilisateur = form.inscrireUtilisateur( request );
+        //Utilisateur utilisateur = form.inscrireUtilisateur( request );
+		System.out.println(request.getReader());
+		Utilisateur utilisateur = new ObjectMapper().readValue(request.getReader(), Utilisateur.class);
+		System.out.println(utilisateur);
+		utilisateur.setMotDePasse(utilisateur.getMotdepasse());
+		System.out.println(utilisateur);
+		this.utilisateurDao.creer(utilisateur);
+		//Utilisateur utilisateur2 = form.inscrireUtilisateur( request );
         try {
             out.println(mapper.writeValueAsString(utilisateur));
           } catch (JsonGenerationException e) {
