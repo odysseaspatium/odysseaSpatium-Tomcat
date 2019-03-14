@@ -7,7 +7,7 @@ import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 
 public class Utilisateur {
 	
-	private static final String ALGO_CHIFFREMENT = "MD5";
+	private static final String ALGO_CHIFFREMENT = "SHA-256";
 
     private Long      id;
     private String    email;
@@ -32,12 +32,7 @@ public class Utilisateur {
 		return motdepasse;
 	}
 	public void setMotDePasse(String motdepasse) {
-		ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
-        passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
-        passwordEncryptor.setPlainDigest( false );
-        String motDePasseChiffre = passwordEncryptor.encryptPassword( motdepasse );
-        System.out.println(motDePasseChiffre);
-		this.motdepasse = motDePasseChiffre;
+		this.motdepasse = motdepasse;
 	}
 	
 	public String getNom() {

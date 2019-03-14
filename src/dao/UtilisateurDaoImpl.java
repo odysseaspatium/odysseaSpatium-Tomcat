@@ -7,11 +7,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 import models.Utilisateur;
 
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 public class UtilisateurDaoImpl implements UtilisateurDao {
-	
-	private static final String REQ_SELECT_BY_MAIL_PASS = "SELECT * from t_utilisateur WHERE mail_user = ? AND mdp_user = ?";
+
+	private static final String ALGO_CHIFFREMENT = "SHA-256";
+	ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
+    
 	private static final String REQ_INSERT = "INSERT INTO t_utilisateur (nom_user,prenom_user,mail_user,mdp_user,id_panier_user) VALUES (?, ?, ?, ?, 1);";
 	private static final String REQ_SELECT_BY_MAIL = "SELECT * from t_utilisateur WHERE mail_user = ?";
 
@@ -19,11 +26,26 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 	
 	UtilisateurDaoImpl(DAOFactory factory){
 		this.daoFactory = factory;
+		try {
+			passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
+			passwordEncryptor.setPlainDigest( false );
+		}catch(Exception e) {
+			
+		}
 	}
 	/* Implémentation de la méthode définie dans l'interface UtilisateurDao */
     @Override
-    public Utilisateur trouver( String email , String mdp ) throws DAOException {
-        return trouver(REQ_SELECT_BY_MAIL_PASS, email, mdp );
+    public Utilisateur verifier_MDP_Connexion( String email , String mdp ) throws DAOException {
+    	Utilisateur u = trouver(email);
+    	try {
+    	System.out.println("mdp : "+mdp);
+    	System.out.println("crypt : "+u.getMotdepasse());
+    	if(passwordEncryptor.checkPassword(mdp.toString(), u.getMotdepasse().toString())) return u;
+    	
+    	}catch(Exception e) {
+            return null;
+    	}
+        return null;
     }
     
     public Utilisateur trouver( String email) {
@@ -98,10 +120,11 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
      */
     private static Utilisateur map( ResultSet resultSet ) throws SQLException {
         Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId( resultSet.getLong( "id" ) );
-        utilisateur.setEmail( resultSet.getString( "email" ) );
-        utilisateur.setMotDePasse( resultSet.getString( "mot_de_passe" ) );
-        utilisateur.setNom( resultSet.getString( "nom" ) );
+        utilisateur.setId( resultSet.getLong( "id_user" ) );
+        utilisateur.setEmail( resultSet.getString( "mail_user" ) );
+        utilisateur.setMotDePasse( resultSet.getString( "mdp_user" ) );
+        utilisateur.setNom( resultSet.getString( "nom_user" ) );
+        utilisateur.setPrenom( resultSet.getString( "prenom_user" ) );
         return utilisateur;
     }
 

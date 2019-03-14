@@ -18,7 +18,7 @@ import dao.DAOFactory;
 import dao.UtilisateurDao;
 import forms.InscriptionForm;
 import models.Utilisateur;
-
+import dao.DAOUtilitaire;
 /**
  * Servlet implementation class Inscription
  */
@@ -66,21 +66,25 @@ public class Inscription extends HttpServlet {
 		//InscriptionForm form = new InscriptionForm( utilisateurDao );
         /* Traitement de la requête et récupération du bean en résultant */
         //Utilisateur utilisateur = form.inscrireUtilisateur( request );
-		Utilisateur utilisateur = new ObjectMapper().readValue(request.getReader(), Utilisateur.class);
-		System.out.println(utilisateur);
-		utilisateur.setMotDePasse(utilisateur.getMotdepasse());
-		System.out.println(utilisateur);
-		this.utilisateurDao.creer(utilisateur);
-		//Utilisateur utilisateur2 = form.inscrireUtilisateur( request );
-        try {
-            out.println(mapper.writeValueAsString(utilisateur));
-          } catch (JsonGenerationException e) {
-        	  e.printStackTrace();
-          } catch (JsonMappingException e) {
-        	  e.printStackTrace();
-          } catch (IOException e) {
-        	  e.printStackTrace();
-          }
+		Utilisateur utilisateur = mapper.readValue(request.getReader(), Utilisateur.class);
+		System.out.println("utilisateur : "+utilisateur);
+		if(this.utilisateurDao.trouver(utilisateur.getEmail()) != null) {
+			mapper.writeValueAsString(null);
+		}else {
+			utilisateur.setMotDePasse(DAOUtilitaire.Hashage(utilisateur.getMotdepasse()));
+			System.out.println("utilisateur : "+utilisateur);
+			this.utilisateurDao.creer(utilisateur);
+			//Utilisateur utilisateur2 = form.inscrireUtilisateur( request );
+	        try {
+	            out.println(mapper.writeValueAsString(utilisateur));
+	          } catch (JsonGenerationException e) {
+	        	  e.printStackTrace();
+	          } catch (JsonMappingException e) {
+	        	  e.printStackTrace();
+	          } catch (IOException e) {
+	        	  e.printStackTrace();
+	          }
+		}
           out.close();
 	}
 

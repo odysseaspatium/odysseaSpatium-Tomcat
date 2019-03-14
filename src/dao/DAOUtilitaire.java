@@ -6,9 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
 import models.Utilisateur;
 
 public class DAOUtilitaire {
+
+	private static final String ALGO_CHIFFREMENT = "SHA-256";
+	
+	public static String Hashage( String mdp ) {
+	    if ( mdp != null ) {
+	    		ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
+	            passwordEncryptor.setAlgorithm( ALGO_CHIFFREMENT );
+	            passwordEncryptor.setPlainDigest( false );
+	            String motDePasseChiffre = passwordEncryptor.encryptPassword( mdp );
+	            return motDePasseChiffre;
+	    }
+	    return null;
+	}
 	
 	/*
 	 * Initialise la requête préparée basée sur la connexion passée en argument,
