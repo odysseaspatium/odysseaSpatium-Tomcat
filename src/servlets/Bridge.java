@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -29,7 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Bridge extends HttpServlet {
 	private static final String URL="http://localhost:4000";
 	private static final long serialVersionUID = 1L;
-       
+	private static final String  URL_TOMCAT="http://localhost:8080/agenceVoyageTomcat/images";
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -37,10 +39,6 @@ public class Bridge extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -54,9 +52,8 @@ public class Bridge extends HttpServlet {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		JsonNode jsonIn = mapper.readTree(request.getReader());
-		System.out.println(jsonIn.get("route").toString());
 		//creation de la route
-		URL obj = new URL(URL+"/"+jsonIn.get("route").toString());
+		URL obj = new URL(URL+"/"+jsonIn.get("route").asText());
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setDoOutput(true);
 		con.setRequestMethod("POST");
@@ -68,26 +65,44 @@ public class Bridge extends HttpServlet {
 		
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		JsonNode jsonOut = mapper.readTree(in);
-		String dossier = jsonOut.get("").toString();
-		if(dossier != null) {
-	        File directory = new File(dossier);
-	        List<String> listeFile = new ArrayList<String>();
-	        //get all the files from a directory
-
-	        File[] fList = directory.listFiles();
-
-	        for (File file : fList){
-	            if (file.isFile()){
-	            	listeFile.add(file.getName());
-	            }
-	        }
-	        ArrayNode array = mapper.valueToTree(listeFile);
-	        ((ObjectNode) jsonOut).putArray("fichiers").addAll(array);
-	        System.out.println(jsonOut.toString());
-		}
+		String dossier_voyage= null,dossier_annonce=null;
+			for(int index=0;index<jsonOut.size();index++) {
+				if(jsonOut.get(index).get("lien_photos_voyage") != null) {
+					dossier_voyage=jsonOut.get(index).get("lien_photos_voyage").toString();
+					ajoutArray(dossier_voyage,"lien_photos_voyage",mapper,jsonOut,index);
+				}
+				if(jsonOut.get(index).get("lien_photo_annonce") != null) {
+					dossier_annonce = jsonOut.get(index).get("lien_photo_annonce").toString();
+					ajoutArray(dossier_annonce,"lien_photo_annonce",mapper,jsonOut,index);
+				}
+			}
+		
 		PrintWriter out = response.getWriter();
 		out.write(jsonOut.toString());
 		
 	}
+	public void ajoutArray(String dossier,String tableau, ObjectMapper mapper, JsonNode jsonOut, int index) {
+	
+		if(dossier != null) {
+        	List<String> listeFile = new ArrayList<String>();
+	        File directory = new File(dossier.replace("\"", ""));
+	        File[] fList = directory.listFiles();
 
+	        for (File file : fList){
+	            if (file.isFile()){
+	           	if(tableau.contains("annonce")) {
+	            		listeFile.add(URL_TOMCAT+"/voyages/"+jsonOut.get(index).findValue("id_voyage").toString()+"/annonce/"+file.getName().toString());
+	            	}
+	            	else {
+		            	if(tableau.contains("voyage")) {
+		            		listeFile.add(URL_TOMCAT+"/voyages/"+jsonOut.get(index).findValue("id_voyage").toString()+"/"+file.getName().toString());
+		            	}
+	            	}
+	            }
+	        }
+
+	        ArrayNode array = mapper.valueToTree(listeFile);
+	        ((ObjectNode) jsonOut.get(index)).putArray(tableau).addAll(array);	
+		}
+	}
 }
