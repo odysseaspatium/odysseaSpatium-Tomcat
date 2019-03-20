@@ -58,6 +58,7 @@ public class Bridge extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.setHeader("Content-Type", "application/json");
 		ObjectMapper mapper = new ObjectMapper();
 		
 		JsonNode jsonIn = mapper.readTree(request.getReader());
@@ -66,6 +67,7 @@ public class Bridge extends HttpServlet {
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setDoOutput(true);
 		con.setRequestMethod("POST");
+		con.setRequestProperty("Content-Type", "application/json");
 		
 		OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
 		writer.write(jsonIn.toString());
