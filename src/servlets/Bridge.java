@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,14 +25,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import dao.DAOFactory;
+
 /**
  * Servlet implementation class Bridge
  */
 @WebServlet("/Bridge")
 public class Bridge extends HttpServlet {
-	private static final String URL="http://localhost:4000";
+	private String URL;
 	private static final long serialVersionUID = 1L;
-	private static final String  URL_TOMCAT="http://localhost:8080/agenceVoyageTomcat/images";
+	private String  URL_TOMCAT;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -39,6 +42,12 @@ public class Bridge extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
+    
+    public void init(ServletConfig config) throws ServletException {
+		this.URL = ( (String) config.getServletContext().getAttribute( "URL" ) );
+		this.URL_TOMCAT = ( (String) config.getServletContext().getAttribute( "URL_TOMCAT" ) );
+	}
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -79,6 +88,7 @@ public class Bridge extends HttpServlet {
 		
 		PrintWriter out = response.getWriter();
 		out.write(jsonOut.toString());
+		out.close();
 		
 	}
 	public void ajoutArray(String dossier,String tableau, ObjectMapper mapper, JsonNode jsonOut, int index) {
