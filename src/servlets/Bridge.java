@@ -88,13 +88,14 @@ public class Bridge extends HttpServlet {
 						dossier_annonce = jsonOut.get(index).get("lien_photo_annonce").toString();
 						ajoutArray(dossier_annonce,"lien_photo_annonce",mapper,jsonOut,index);
 					}
+			
+					if(jsonOut.get(index).get("lien_photo_commentaire")!= null) {
+						dossier_commentaire = jsonOut.get(index).get("lien_photo_commentaire").toString();
+						
+						ajoutArray(dossier_commentaire,"lien_photo_commentaire",mapper,jsonOut,index);
+					}
 				}catch(Exception e) {
 					
-				}
-				if(jsonOut.get(index).get("lien_photo_commentaire")!= null) {
-					dossier_commentaire = jsonOut.get(index).get("lien_photo_commentaire").toString();
-					
-					ajoutArray(dossier_commentaire,"lien_photo_commentaire",mapper,jsonOut,index);
 				}
 			}
 				
