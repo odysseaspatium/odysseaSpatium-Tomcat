@@ -3,12 +3,19 @@ package dao;
 import static dao.DAOUtilitaire.fermeturesSilencieuses;
 import static dao.DAOUtilitaire.initialisationRequetePreparee;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Utilisateur;
 
@@ -19,7 +26,7 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 	private static final String ALGO_CHIFFREMENT = "SHA-256";
 	ConfigurablePasswordEncryptor passwordEncryptor = new ConfigurablePasswordEncryptor();
     
-	private static final String REQ_INSERT = "INSERT INTO t_utilisateur (nom_user,prenom_user,mail_user,mdp_user,id_panier_user) VALUES (?, ?, ?, ?, 1);";
+	private static final String REQ_INSERT = "INSERT INTO t_utilisateur (nom_user,prenom_user,mail_user,mdp_user,id_panier_user) VALUES (?, ?, ?, ?, ?);";
 	private static final String REQ_SELECT_BY_MAIL = "SELECT * from t_utilisateur WHERE mail_user = ?";
 
 	private DAOFactory daoFactory;
@@ -54,7 +61,7 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
     
     /* Implémentation de la méthode définie dans l'interface UtilisateurDao */
     @Override
-    public void creer( Utilisateur utilisateur ) throws DAOException {
+    public void creer( Utilisateur utilisateur ) throws DAOException,IOException {
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
         ResultSet valeursAutoGenerees = null;
@@ -62,7 +69,15 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
         try {
             connexion = daoFactory.getConnection();
             
-            preparedStatement = initialisationRequetePreparee( connexion, REQ_INSERT, true, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMotdepasse() );
+            URL obj = new URL("http://localhost:4000/Panier/creerPanier");
+    		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+    		con.setDoOutput(true);
+    		con.setRequestMethod("POST");
+    		con.setRequestProperty("Content-Type", "application/json");
+    		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    		String panier = in.readLine();
+    		System.out.println(panier);
+            preparedStatement = initialisationRequetePreparee( connexion, REQ_INSERT, true, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMotdepasse(), panier );
             int statut = preparedStatement.executeUpdate();
             if ( statut == 0 ) {
                 throw new DAOException( "Échec de la création de l'utilisateur, aucune ligne ajoutée dans la table." );

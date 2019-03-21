@@ -1,5 +1,6 @@
 package forms;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public final class InscriptionForm {
         return resultat;
     }
 
-    public Utilisateur inscrireUtilisateur( HttpServletRequest request ) {
+    public Utilisateur inscrireUtilisateur( HttpServletRequest request ) throws DAOException, IOException {
     	System.out.println(request.toString());
         String email = getValeurChamp( request, CHAMP_EMAIL );
         String motDePasse = getValeurChamp( request, CHAMP_PASS );
