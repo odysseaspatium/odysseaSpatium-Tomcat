@@ -79,13 +79,17 @@ public class Bridge extends HttpServlet {
 		JsonNode jsonOut = mapper.readTree(in);
 		String dossier_voyage= null,dossier_annonce=null, dossier_commentaire =null;
 			for(int index=0;index<jsonOut.size();index++) {
-				if(jsonOut.get(index).get("lien_photos_voyage") != null) {
-					dossier_voyage=jsonOut.get(index).get("lien_photos_voyage").toString();
-					ajoutArray(dossier_voyage,"lien_photos_voyage",mapper,jsonOut,index);
-				}
-				if(jsonOut.get(index).get("lien_photo_annonce") != null) {
-					dossier_annonce = jsonOut.get(index).get("lien_photo_annonce").toString();
-					ajoutArray(dossier_annonce,"lien_photo_annonce",mapper,jsonOut,index);
+				try {
+					if(jsonOut.get(index).get("lien_photos_voyage") != null) {
+						dossier_voyage=jsonOut.get(index).get("lien_photos_voyage").toString();
+						ajoutArray(dossier_voyage,"lien_photos_voyage",mapper,jsonOut,index);
+					}
+					if(jsonOut.get(index).get("lien_photo_annonce") != null) {
+						dossier_annonce = jsonOut.get(index).get("lien_photo_annonce").toString();
+						ajoutArray(dossier_annonce,"lien_photo_annonce",mapper,jsonOut,index);
+					}
+				}catch(Exception e) {
+					
 				}
 				if(jsonOut.get(index).get("lien_photo_commentaire")!= null) {
 					dossier_commentaire = jsonOut.get(index).get("lien_photo_commentaire").toString();
@@ -93,6 +97,7 @@ public class Bridge extends HttpServlet {
 					ajoutArray(dossier_commentaire,"lien_photo_commentaire",mapper,jsonOut,index);
 				}
 			}
+				
 		
 		PrintWriter out = response.getWriter();
 		out.write(jsonOut.toString());
